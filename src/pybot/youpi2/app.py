@@ -125,11 +125,13 @@ class YoupiApplication(log.LogMixin):
             finally:
                 self.clear_screen()
                 self.pnl.center_text_at('terminating', 3)
-                self.arm.soft_hi_Z()
-                self.logger.info('arm set in Hi-Z')
 
                 self.log_info('invoking application teardown with exit_code=%s', exit_code)
                 self.teardown(exit_code)
+
+                self.arm.soft_hi_Z()
+                self.logger.info('arm set in Hi-Z')
+
 
         self.log_info('returning with exit_code=%s', exit_code)
         return exit_code
