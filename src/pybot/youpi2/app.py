@@ -132,7 +132,6 @@ class YoupiApplication(log.LogMixin):
                 self.arm.soft_hi_Z()
                 self.logger.info('arm set in Hi-Z')
 
-
         self.log_info('returning with exit_code=%s', exit_code)
         return exit_code
 
