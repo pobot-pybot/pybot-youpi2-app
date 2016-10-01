@@ -62,10 +62,10 @@ class YoupiApplication(log.LogMixin):
     TITLE = "Youpi application"
     VERSION = None
 
-    def __init__(self):
+    def __init__(self, log_level=log.INFO):
         log_name = 'youpi2-' + self.NAME
         log.setup_logging(log_name=log_name)
-        log.LogMixin.__init__(self, name=log_name)
+        log.LogMixin.__init__(self, name=log_name, level=log_level)
 
         self.pnl = None
         self.arm = None
