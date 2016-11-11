@@ -142,6 +142,18 @@ class YoupiApplication(log.LogMixin):
         pass
 
     def loop(self):
+        """ Sub-class will override this method most of the time, by providing
+        the code to be executed repeatedly.
+
+        The method can return True if the application must exit its main loop.
+        There is no need to return False otherwise, since None is
+        defaulted by Python if no explicit return value.
+
+        .. WARNING::
+
+            Do not code the main loop yourself here, otherwise the external
+            interruption signal will not be properly handled.
+        """
         pass
 
     def teardown(self, exit_code):
