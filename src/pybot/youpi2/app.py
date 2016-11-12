@@ -13,6 +13,11 @@ from pybot.youpi2.ctlpanel.devices.fs import FileSystemDevice
 
 __author__ = 'Eric Pascual'
 
+_sig_names = {
+    getattr(signal, s): s
+    for s in (s for s in dir(signal) if s.startswith('SIG') and not s.startswith('SIG_'))
+}
+
 
 class YoupiApplication(log.LogMixin):
     """ Base class for creating applications for the Youpi2 environment.
@@ -79,9 +84,10 @@ class YoupiApplication(log.LogMixin):
         self.add_custom_arguments(parser)
         sys.exit(self.run(parser.parse_args()))
 
-    def terminate(self, *args):
+    def terminate(self, sig, frame):
         self.terminated = True
-        self.on_terminate(*args)
+        self.log_info('!! signal %s caught', _sig_names[sig])
+        self.on_terminate(sig, frame)
 
     def clear_screen(self):
         self.pnl.clear()
@@ -97,6 +103,7 @@ class YoupiApplication(log.LogMixin):
         self.arm = ArmClient(args.arm_node_name)
 
         signal.signal(signal.SIGTERM, self.terminate)
+        signal.signal(signal.SIGINT, self.terminate)
 
         self.clear_screen()
 
