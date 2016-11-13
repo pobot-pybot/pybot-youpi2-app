@@ -69,20 +69,23 @@ class YoupiApplication(log.LogMixin):
 
     def __init__(self, log_level=log.INFO):
         log_name = 'youpi2-' + self.NAME
-        log.setup_logging(log_name=log_name)
+        log.setup_logging(log_name=log_name, debug=log_level==log.DEBUG)
         log.LogMixin.__init__(self, name=log_name, level=log_level)
 
         self.pnl = None
         self.arm = None
         self.terminated = False
 
-    def main(self):
+    @classmethod
+    def main(cls):
         parser = cli.get_argument_parser()
         parser.add_argument('--pnldev', default="/mnt/lcdfs")
         parser.add_argument('--arm-node-name', default="nros.youpi2")
+        cls.add_custom_arguments(parser)
 
-        self.add_custom_arguments(parser)
-        sys.exit(self.run(parser.parse_args()))
+        args = parser.parse_args()
+        app = cls(log_level=log.DEBUG if (args.debug or args.verbose) else log.INFO)
+        sys.exit(app.run(args))
 
     def terminate(self, sig, frame):
         self.terminated = True
@@ -142,7 +145,8 @@ class YoupiApplication(log.LogMixin):
         self.log_info('returning with exit_code=%s', exit_code)
         return exit_code
 
-    def add_custom_arguments(self, parser):
+    @classmethod
+    def add_custom_arguments(cls, parser):
         pass
 
     def setup(self, **kwargs):
